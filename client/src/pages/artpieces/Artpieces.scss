@@ -1,0 +1,25 @@
+.artpieces {
+}
+
+.artpiece-container {
+    display: flex;
+    justify-content: start;
+    flex-wrap: wrap;
+}
+
+.artpiece-item {
+    width: 18.5%;
+    margin-right: 1.875%;
+    margin-bottom: 16px;
+}
+
+.artpiece-item:nth-of-type(5n) {
+    margin-right: 0;
+}
+
+.artpiece-item img {
+    width: 100%;
+    max-height: 350px;
+    object-fit: cover;
+    border-radius: 6px ;
+}

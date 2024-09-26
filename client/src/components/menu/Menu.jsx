@@ -1,35 +1,66 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import "./Menu.scss";
+import { UserContext } from "../../contexts/user.context.jsx";
 
 export default function Menu() {
+  const { user, logout } = useContext(UserContext);
+
+  const [menuContent, setMenuContent] = useState(true);
   const [appearanceMenu, setAppearanceMenu] = useState(false);
+  const [languageMenu, setLanguageMenu] = useState(false);
+
   const menuContentRef = useRef();
   const appearanceMenuRef = useRef();
+  const languageContentRef = useRef();
+
   useEffect(() => {
-    if (appearanceMenu) {
-      appearanceMenuRef.current.classList.add("active");
-      menuContentRef.current.style.transform = "translateX(calc(-100% - 24px))";
-      menuContentRef.current.style.transition = "0.3s";
-      console.log(menuContentRef)
-    //   appearanceMenuRef.current.style.transform = "translateX(calc(-100% - 24px))";
-    //   appearanceMenuRef.current.style.transition = "1s";
-    } else {
-      appearanceMenuRef.current.classList.remove("active");
-    }
-  });
+    const toggleDisplayMenu = () => {
+      console.log(menuContent)
+      console.log(appearanceMenu)
+      console.log(languageMenu)
+      if (appearanceMenu) {
+        appearanceMenuRef.current.classList.add("active");
+        menuContentRef.current.classList.remove("active");
+        languageContentRef.current.classList.remove("active");
+        return;
+      }
+
+      if (languageMenu) {
+        languageContentRef.current.classList.add("active");
+        menuContentRef.current.classList.remove("active");
+        appearanceMenuRef.current.classList.remove("active");
+        return;
+      }
+
+      if (menuContent) {
+        menuContentRef.current.classList.add("active");
+        appearanceMenuRef.current.classList.remove("active");
+        languageContentRef.current.classList.remove("active");
+      }
+    };
+    toggleDisplayMenu();
+  }, [appearanceMenu, menuContent, languageMenu]);
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <>
-      <div className="menu" ref={menuContentRef}>
-        <div className="menu-content" >
-          <h4>Hi, Nhat Luu</h4>
+      <div className="menu">
+        {/* General Menu */}
+        <div className="menu-content active" ref={menuContentRef}>
+          <h4>Hi, {user.username}</h4>
           <div>nhat_luu@gmail.com</div>
           <div className="menu-container">
             <hr />
-            <div className="menu-item">
+            <a
+              href={`http://localhost:3000/users/${user?._id}`}
+              className="menu-item"
+            >
               <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAZxJREFUSEu11L1vjWEYx/HPSecmmgpCajHUaOofIF5K01EbU/8CidCkpoYNIQzduyojUukLo9UmBgtB21RIGQnPldxtTh7nPveTU+da7/v6fa/3lj5bq8/6mgImq0Bu4kQK6D3m8bwUYBPAHG5nhGZxvxukBDiPF9hAgFaS2DncwRGcwXoOUgKsJoFpPK6JTGEJy7jYK+AbDlRlGMTPmsgwtvEZx3oFbOIQDuJrBhB/olQdrVSiqPlZRDmeZEoUPbrQK6C9yTEx0ZOBBL2Lw/ttcgR2DSEWwu32u+pLQB/uZ0x3fUdxHTGev/Ayzf+7/7FoJY2u792aHOMZUY/hVJqmdrEtvMHrlM2PTqQcIKZiMTWxSQaxCzNYq3/uBJjAs/TxKW4hjtv3mnNkGMcv3sMnLAKLsd2zOmAIb1PkcWtuNAkf91I5v+BkNXk7u351wFU8wCucbige30InljIO35Vq8xdygDhol0rLkwGPp8P3CJdzgA8YQZSqXvNSQkfxCR9xPAf4kx5KNyoH+8e/V6FSNtkpauzY9GPfM/gL5dBHGcZ57nQAAAAASUVORK5CYII=" />
               <span className="title">Profile</span>
-            </div>
+            </a>
             <div
               className="menu-item"
               onClick={() => {
@@ -39,7 +70,10 @@ export default function Menu() {
               <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAkBJREFUSEu11UvojlsUBvCfDjkSEqLcJnIpZ2SATBQpJZQiIYVyS0ghA0zkVoo4h1wyIClCGLkMhGOkxARJJwZCyDWSYy/tT6/X+30vg/+efN9+91rr2etZz1q7nTZe7do4vjqAPpiBsRiGgfgTn3Ab57AXT5pdtBXAVBxGt5os32El9lfZNQNYh03Z4T5O4Tqu4CX6YRbmYXC225wyC78fVhXAhmSxMVvtSwGX42OTLDpgLdajPbbm/XfzMsA4XMwB5ybej2fLPViCv7EU5f0UnM62s3G0gVAEiBs8SkWLwq7G9sKt/y/8D5/yPo7XJAFsSdQFpUMaNkWAaTiBe1kxXwpB6zII06ArLtgb43EpPhYBgo7pWIbdFTT8Sss06ncQC8oAkdog/IU7TWioAxme++MuhpYBXqML/kiqCHrKtNQFj/Nowg94g65lgOfokY2aybIIEsHGYBTepsIeS83WFzfxCt3LAP9hQFZAFLpVBtHlhxpBKlK7kBpzQhngLCYl9BXJcWeLGvTPUuyIbfg38R4KnJnpfZD3t8oAC/PguoHRLTKIzo2xcARz6gpTlGlnPEyBe2XHCFC1GtStSoXc8TsAYRvDKzT8LGcR6ZbXotRM/+B8prQlRtWwO5OUMBkv8u+1UoSeqYke43OWYrHjfwKrAuiUmu0kJuZCX84SDBE8xcg0Cq5mgJD1+1YptHpwFuc34ZueK9auPMp/m6KiQwSfjxjHI9K8j+yiXw5k8OJUrQSqe5PrRFJ73uYAXwELH3UZoHMS+gAAAABJRU5ErkJggg==" />
               <span className="title">Appearance</span>
             </div>
-            <div className="menu-item">
+            <div className="menu-item"
+              onClick={() => {
+                setLanguageMenu(true);
+              }}>
               <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAqxJREFUSEu11V3o33MUB/DXtDw0rJFNHppStqw8LFcj4UJMLlCY50V5KFtKtiLPccFcmMhDW8is1dZak6gVaVFSzAUT5QZjGuUhY8znvc5P3337/X5/F/t/bn79vufzOe9zzvt9zpliks+USfZvIoBDcAUuwuk4CXvxNT7Gm9iAv0YFOg7gYjxbTscl+iVuw5Zhl0YBPNgifaAe/IZpFeWZ+Buf4GAMbLl6N1b0QYYBxHEAfsYynI+rm8PHGsi95eBxLK/ybMaTOApL2+/TXZA+wKXYhN9xAb7Cd1X3E/BDPZ5ePByBExHbOzgU52LrAKQLkMtf4Nj2+Ca8jFvwYkUasrtnFRZXtg/Vm9XY3u6fhj9zuQtwe5H6Kc7AP3i9ynMz4rB7Btm+jwU4CNswr3F0WfOxsQ/wBhZiCVaWp88wtwBDbPck05QvXM0oQ4h+Ai802619gG+a4bieszxOvY/Bj0Nk+Esj+PCW+UzsxFn4sHokituvRCH2sAPU2T+VqvYDGERzIDDi68h+BmH/lF6JdmBWU9Lx+HYIcsp2dCnv+ybx+fgI4e7UPsBrTabX4E48U85yOY+ikqile0LsrpJj9J8ZdVeL/Cm8ghv7ANeXIWqJTHPSCze0BrujZfLcCJmmqc4p2+dN2nNaBle1DNb1AUJwypTOXNTkuRbR/0utdGtwbQ8g32PPWEmjXYdXq1nTaLv7APl/Id6qUXF2m5LhIFr/tYAj25yUJ5ykNKn1yViPqW1knIf3BsEMG3YZaI+W7u/BlbUPHu5M2Psr6g9qJ2RAppO7/O3DGDWu78MjFcVgJCflLJ28ybLJMvqjsgjBmaSDCfBfNcctnEvwfEl0XG9k4WQovjvs0kQrMzW+vGZUiJtdcswYj4TfrqG2Z1QEEwGMi/x/2SYd4F9DQooZvsQXDgAAAABJRU5ErkJggg==" />
               <span className="title">Language</span>
             </div>
@@ -56,15 +90,25 @@ export default function Menu() {
               <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAANBJREFUSEvt08FpAkEYhuHHg1iCgoEI1hFiHTYQsADbyMlL7vahSEgTCQgqpAmJDMyiRNk/WV0EcU8L+8/3zvfOTkPNT6PmfHdAaPg2Ff2EvfcDoYFTA7UD/lEgHg0rxhHlE1dRVPUM2hji9bDTpRR1MUcfL3grIJcApPB3POITT/guA5QpKjY0xhRNzHL4F56xiRRFgBEmSIEtPOT3Ada//6kqijr4QC+HLbOWo/D0vQogrUu7XmRAcn4y/BxAWpsabLEqu2pVG/z5gt8Boaod42wbGfdJKoYAAAAASUVORK5CYII=" />
               <span className="title">Terms & Policies</span>
             </div>
-            <div className="menu-item">
+            <div className="menu-item" onClick={logout}>
               <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAM1JREFUSEvdlT0KwkAQRl/OIQhiobcJeA1bG2+gZ9BzeIbUNnaiIHgHG+UDN4ToOsvEVci2M/O9+UlmCjK/IrM+PweUwAqYOis7AAtgF+LbFVyAgVM8hB2BcQxwfxq8rXuJbwv1H7AB5sAtMiezRdZ8JVABM+D6xvkrAOlKXBDBms8EBAerEtnVJrVr23D+P8DKPGToblEKoNOQrR+t82dqAVIqlE+9Ifq3Ks7A0OqDYT8Bo9i61sFZAxMnZA8sPx0cp248zHtYkhPJDngAqgQ2GSwkQI0AAAAASUVORK5CYII=" />
               <span className="title">Logout</span>
             </div>
           </div>
         </div>
+
+        {/* Appearance Menu */}
         <div className="sub-menu appearance" ref={appearanceMenuRef}>
           <div className="sub-menu__title">
-            <img className="sub-menu__back-ic" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAANJJREFUSEvl1EFqAkEQRuHPQwR0n4BnEEFPIWQteB1xLXgYBW/gwo17IYcIBVEamRmnOzMLcdY971X9XdUDPX+DnvneRzDEN9a5kbaJKOAHfGKFbY7kmSCFXzDBtStBCj9jlguPQuo6eIRP8ZNT+e1sleADx7/Mo/JieFUHAd9jjBPmpZVXdZDCS9JI/7knk0bUuyAqSCX/zr9uijqV1I1pZ5PUtMmd7ELOU1G0zc8EcU/RSezGF5bY5cxwG0HwRlhgkwNveotyObXn23ZQLHx9wS8QNSYZP6YqMAAAAABJRU5ErkJggg==" />
+            <img
+              className="sub-menu__back-ic"
+              onClick={() => {
+                setMenuContent(true);
+                setAppearanceMenu(false);
+                setLanguageMenu(false);
+              }}
+              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAANJJREFUSEvl1EFqAkEQRuHPQwR0n4BnEEFPIWQteB1xLXgYBW/gwo17IYcIBVEamRmnOzMLcdY971X9XdUDPX+DnvneRzDEN9a5kbaJKOAHfGKFbY7kmSCFXzDBtStBCj9jlguPQuo6eIRP8ZNT+e1sleADx7/Mo/JieFUHAd9jjBPmpZVXdZDCS9JI/7knk0bUuyAqSCX/zr9uijqV1I1pZ5PUtMmd7ELOU1G0zc8EcU/RSezGF5bY5cxwG0HwRlhgkwNveotyObXn23ZQLHx9wS8QNSYZP6YqMAAAAABJRU5ErkJggg=="
+            />
             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAkBJREFUSEu11UvojlsUBvCfDjkSEqLcJnIpZ2SATBQpJZQiIYVyS0ghA0zkVoo4h1wyIClCGLkMhGOkxARJJwZCyDWSYy/tT6/X+30vg/+efN9+91rr2etZz1q7nTZe7do4vjqAPpiBsRiGgfgTn3Ab57AXT5pdtBXAVBxGt5os32El9lfZNQNYh03Z4T5O4Tqu4CX6YRbmYXC225wyC78fVhXAhmSxMVvtSwGX42OTLDpgLdajPbbm/XfzMsA4XMwB5ybej2fLPViCv7EU5f0UnM62s3G0gVAEiBs8SkWLwq7G9sKt/y/8D5/yPo7XJAFsSdQFpUMaNkWAaTiBe1kxXwpB6zII06ArLtgb43EpPhYBgo7pWIbdFTT8Sss06ncQC8oAkdog/IU7TWioAxme++MuhpYBXqML/kiqCHrKtNQFj/Nowg94g65lgOfokY2aybIIEsHGYBTepsIeS83WFzfxCt3LAP9hQFZAFLpVBtHlhxpBKlK7kBpzQhngLCYl9BXJcWeLGvTPUuyIbfg38R4KnJnpfZD3t8oAC/PguoHRLTKIzo2xcARz6gpTlGlnPEyBe2XHCFC1GtStSoXc8TsAYRvDKzT8LGcR6ZbXotRM/+B8prQlRtWwO5OUMBkv8u+1UoSeqYke43OWYrHjfwKrAuiUmu0kJuZCX84SDBE8xcg0Cq5mgJD1+1YptHpwFuc34ZueK9auPMp/m6KiQwSfjxjHI9K8j+yiXw5k8OJUrQSqe5PrRFJ73uYAXwELH3UZoHMS+gAAAABJRU5ErkJggg==" />
             <span className="title">Appearance</span>
           </div>
@@ -78,7 +122,7 @@ export default function Menu() {
               <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAgZJREFUSEu11UuoTWEUB/Df9RwZIK8ICRlQIoryGCqFIaW8YuCRMKJEJiZeZaCQR5LHCJkoE2RE5DFAmUihFCWSKHtpndr3dPbd57j3rvra3977W+u/Hv+1vi79LF39bF8dwFhsyfUbkzt1qCeAHTiCIWn0I8b1BcBgXMeqNPYI8/AAi/sC4Bw24Ac24jPu4g6W9RZgBW7iD5bgYXp9D08wt7cAzzELh3AgjY1B5P8nRuNbJyDlIs/EC3zHBHwtGXqK2Zm6C/8LsBtHcRVrmoxsx0m8zIJHNG1JOYLT2IytONWkPRRvMR4Xsb4t63RrtBtYmetWCwMLcB+DEM5sQzRfj1KOIHK7DqtxrUIrUnceEdEr7EM4E6xrKWWAYM7+ZE/sq2QqLmN+HggyPMv9gCRDfJsY38oAC5P30bkN5SqQgdhb/DyI2DfL64IsM5oBAizCnp4dG51bJ1GPUQXDRmJEQe+zRXTTsAsnmgHiPfJ/BR8yivd1CKX/DSr/KlgYzfmvj1pN09tYXvRChBlFjSbrScLGzuyhqEGM9zMNhVYAw/EYU5IdkefDFUyZhEtYlAaPFaNkT9mbqvtgGI5jU4kpMa5j6L1BEGJppjG8/pJ9EentJnU3Wozn4H3cbFUSo3wtPrU6UAcQOsGUGHRz8hlpiboEneP5rq5AHRCl86PtRNC51ZLGX0IpXBnBPatbAAAAAElFTkSuQmCC" />
               <span>Dark</span>
             </div>
-            <hr/>
+            <hr />
             <div className="menu-item">
               <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAKVJREFUSEvtlE0OQDAUhD/nkEjEgtu4jI0bcCEHsbETEvcgRBN/1SdNbei282Y603Y8HC/PMT+vCqRAASSWrhogA6qZZ+tgAHxLcjXeAtFRYFx3bWPb8WzJfgGV/x+R8SF/ICJjBkLA8seuPppw3gg7CfRAYByTATogPDqY27QEYhmHFlUD+VWbSngf99XT5nQioEh1Dm8PKXHgXEByN1qMxIGVwAR45SIZPNjn9AAAAABJRU5ErkJggg==" />
               <span>Default</span>
@@ -105,6 +149,41 @@ export default function Menu() {
             </div>
           </div>
         </div>
+
+        {/* Language Menu */}
+        <div className="sub-menu language" ref={languageContentRef}>
+          <div className="sub-menu__title">
+            <img
+              className="sub-menu__back-ic"
+              onClick={() => {
+                setMenuContent(true);
+                setAppearanceMenu(false);
+                setLanguageMenu(false);
+              }}
+              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAANJJREFUSEvl1EFqAkEQRuHPQwR0n4BnEEFPIWQteB1xLXgYBW/gwo17IYcIBVEamRmnOzMLcdY971X9XdUDPX+DnvneRzDEN9a5kbaJKOAHfGKFbY7kmSCFXzDBtStBCj9jlguPQuo6eIRP8ZNT+e1sleADx7/Mo/JieFUHAd9jjBPmpZVXdZDCS9JI/7knk0bUuyAqSCX/zr9uijqV1I1pZ5PUtMmd7ELOU1G0zc8EcU/RSezGF5bY5cxwG0HwRlhgkwNveotyObXn23ZQLHx9wS8QNSYZP6YqMAAAAABJRU5ErkJggg=="
+            />
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAkBJREFUSEu11UvojlsUBvCfDjkSEqLcJnIpZ2SATBQpJZQiIYVyS0ghA0zkVoo4h1wyIClCGLkMhGOkxARJJwZCyDWSYy/tT6/X+30vg/+efN9+91rr2etZz1q7nTZe7do4vjqAPpiBsRiGgfgTn3Ab57AXT5pdtBXAVBxGt5os32El9lfZNQNYh03Z4T5O4Tqu4CX6YRbmYXC225wyC78fVhXAhmSxMVvtSwGX42OTLDpgLdajPbbm/XfzMsA4XMwB5ybej2fLPViCv7EU5f0UnM62s3G0gVAEiBs8SkWLwq7G9sKt/y/8D5/yPo7XJAFsSdQFpUMaNkWAaTiBe1kxXwpB6zII06ArLtgb43EpPhYBgo7pWIbdFTT8Sss06ncQC8oAkdog/IU7TWioAxme++MuhpYBXqML/kiqCHrKtNQFj/Nowg94g65lgOfokY2aybIIEsHGYBTepsIeS83WFzfxCt3LAP9hQFZAFLpVBtHlhxpBKlK7kBpzQhngLCYl9BXJcWeLGvTPUuyIbfg38R4KnJnpfZD3t8oAC/PguoHRLTKIzo2xcARz6gpTlGlnPEyBe2XHCFC1GtStSoXc8TsAYRvDKzT8LGcR6ZbXotRM/+B8prQlRtWwO5OUMBkv8u+1UoSeqYke43OWYrHjfwKrAuiUmu0kJuZCX84SDBE8xcg0Cq5mgJD1+1YptHpwFuc34ZueK9auPMp/m6KiQwSfjxjHI9K8j+yiXw5k8OJUrQSqe5PrRFJ73uYAXwELH3UZoHMS+gAAAABJRU5ErkJggg==" />
+            <span className="title">Language</span>
+          </div>
+          <hr />
+          <div className="sub-menu-container">
+            <div className="menu-item">
+              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAbxJREFUSEu11U+ITlEYBvDfkCysJEopmthbywYLlhbKnmYWIjHNkD8hhAgLMxvs7ZQdhZW1tbIzo0bIykL5c16dT7fTvd+5n745m9u5973Pc97nfd/nTFjhNbHC+EYhiNhf+UC9/+sdyN/DjI3gIhbwpZDwdyZZXbzfhCO4WUrelsF5XMM77MXHSp224DW24yxuNePbCLbiFSYxg7sVgrkM+j4f6EONIL5HylO4noMP4Rj25P1LzONp3p/DoxTzqY9EZcydnElbIpdT8a8My7DWRYfxJANczYWP7XFErWLtx4sukhrBW+zEadwrQAbN8BwHagTNHo/YAfFPrMJ6fCtANucO+4oNxZz8wxgAdRH8SIVe00EQjbCM71hXI+jK8E3Sd1cCiVa83SFRzEDMS+uq1eBgoxWjyA+wNk34CcxmxNA/6vBfBPHTsDa90JiVkQhC36PptDcag3YSu/P+GR4jnrGiox72HbRt2VvieQr3hw0SzmSTC6uISV9sxrfVINIOvcPs9iXLWKoQhNmFd+3oa3aBdyl7zecCvMuuN6aZmG6rR62LymzHduG0qTLWG60ie//Po0jUH7UR+QcpUk4ZRDtj1AAAAABJRU5ErkJggg==" />
+              <span>EN</span>
+            </div>
+            <div className="menu-item">
+              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAgZJREFUSEu11UuoTWEUB/Df9RwZIK8ICRlQIoryGCqFIaW8YuCRMKJEJiZeZaCQR5LHCJkoE2RE5DFAmUihFCWSKHtpndr3dPbd57j3rvra3977W+u/Hv+1vi79LF39bF8dwFhsyfUbkzt1qCeAHTiCIWn0I8b1BcBgXMeqNPYI8/AAi/sC4Bw24Ac24jPu4g6W9RZgBW7iD5bgYXp9D08wt7cAzzELh3AgjY1B5P8nRuNbJyDlIs/EC3zHBHwtGXqK2Zm6C/8LsBtHcRVrmoxsx0m8zIJHNG1JOYLT2IytONWkPRRvMR4Xsb4t63RrtBtYmetWCwMLcB+DEM5sQzRfj1KOIHK7DqtxrUIrUnceEdEr7EM4E6xrKWWAYM7+ZE/sq2QqLmN+HggyPMv9gCRDfJsY38oAC5P30bkN5SqQgdhb/DyI2DfL64IsM5oBAizCnp4dG51bJ1GPUQXDRmJEQe+zRXTTsAsnmgHiPfJ/BR8yivd1CKX/DSr/KlgYzfmvj1pN09tYXvRChBlFjSbrScLGzuyhqEGM9zMNhVYAw/EYU5IdkefDFUyZhEtYlAaPFaNkT9mbqvtgGI5jU4kpMa5j6L1BEGJppjG8/pJ9EentJnU3Wozn4H3cbFUSo3wtPrU6UAcQOsGUGHRz8hlpiboEneP5rq5AHRCl86PtRNC51ZLGX0IpXBnBPatbAAAAAElFTkSuQmCC" />
+              <span>VI</span>
+            </div>
+            <hr />
+            <div className="menu-item">
+              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAKVJREFUSEvtlE0OQDAUhD/nkEjEgtu4jI0bcCEHsbETEvcgRBN/1SdNbei282Y603Y8HC/PMT+vCqRAASSWrhogA6qZZ+tgAHxLcjXeAtFRYFx3bWPb8WzJfgGV/x+R8SF/ICJjBkLA8seuPppw3gg7CfRAYByTATogPDqY27QEYhmHFlUD+VWbSngf99XT5nQioEh1Dm8PKXHgXEByN1qMxIGVwAR45SIZPNjn9AAAAABJRU5ErkJggg==" />
+              <span>FR</span>
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </>
   );

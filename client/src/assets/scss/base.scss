@@ -5,9 +5,11 @@
   --white-text-color-light: #FFFFFF;
   --green-link-color-light: #0EB75C;
   
-  --gray-bg-light: #e9e9e9;
+  --gray-bg-light: #f0f0f0;
+  --black-bg-light: #202024;
+  --gray-button-light: #3E3E3E;
 
-  --field-border-light: #D6D6D6;
+  --field-border-light: #d2d2d2;
   --form-field-bg-light: #F7F7F7;
   --form-submit-btn-light: #252525;
 
@@ -33,13 +35,12 @@ body {
   text-overflow: ellipsis;
   width: 100%;
   overflow-x: hidden;
-  height: 50000px;
   font-size: 1.3rem;
   font-weight: 500;
 }
 
 #root {
-    margin: 4px 4% !important;
+    margin: 90px 4% !important;
 }
 
 ::selection {
@@ -68,6 +69,10 @@ a {
   color: var(--black-text-color-light);
 }
 
+i {
+  font-size: 1.6rem;
+  margin-right: 8px;
+}
 // Headings & Texts
 h1 {
   font-size: 2.6rem;
@@ -87,15 +92,19 @@ h4 {
 }
 
 p {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
+  line-height: 2rem;
 }
 
 // Buttons
-.btn {
-  padding: 6px 12px;
-  border-radius: 8px;
+button {
   border: none;
   outline: none;
+}
+
+.btn {
+  padding: 8px 18px;
+  border-radius: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -120,8 +129,13 @@ p {
 }
 
 .btn-2 {
-  background-color: black;
-  color: white;
+  background-color: var(--black-bg-light);
+  color: var(--white-text-color-light);
+}
+
+button:hover {
+  opacity: 0.9;
+  cursor: pointer;
 }
 
 // Commons
@@ -144,10 +158,94 @@ hr {
   width: 100%;
   height: 100%;
   position: fixed;
+  z-index: 1000;
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.7);
   transition: 0.4s;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;    
+}
+
+.user-info__avt {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+  border: 2px solid white;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-info .avt {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 1px solid white;
+  margin-right: 8px;
+}
+
+.user-info__name .user-info__name__fullname {
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.user-info__name .user-info__name__username {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--gray-text-color-light);
+}
+
+.user-info img {
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+  border-radius: 2px solid white;
+}
+
+
+.user-info .avt-l {
+  width: 60px;
+  height: 60px;
+}
+
+.user-info .avt-m {
+  width: 40px;
+  height: 40px;
+}
+
+.user-info .avt-s {
+  width: 32px;
+  height: 32px;
+}
+
+.user-info .avt-xs {
+  width: 26px;
+  height: 26px;
+}
+
+.user-info .avt-xxs {
+  width: 18px;
+  height: 18px;
+}
+
+
+.rating-ic {
+  width: 12px;
+  object-fit: cover;
 }
 
 // Form
@@ -201,4 +299,14 @@ input[type="submit"]:hover {
   position: absolute;
   top: 20px;
   right: 20px;
+}
+
+.form-close-ic:hover {
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+.form-field__error {
+  color: #dc3d3d;
+  margin-top: 4px;
 }

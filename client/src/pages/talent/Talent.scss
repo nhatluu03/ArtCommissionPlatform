@@ -1,0 +1,54 @@
+.talent-profile {
+  display: flex;
+  justify-content: space-between;
+}
+
+.talent-profile--left {
+  width: 26%;
+}
+
+.talent-profile--right {
+  width: 72%;
+}
+
+.talent-profile__bg-img {
+  width: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  height: 24vh;
+}
+
+.talent-profile__button-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.talent-profile__button-item {
+  background-color: transparent;
+  padding: 8px 16px;
+  border: 1px solid var(--field-border-light);
+  border-radius: 6px;
+  font-weight: 500;
+  margin: 24px 12px 0px 0;
+  display: inline-flex;
+  align-items: center;
+
+  &.active {
+    background-color: var(--black-bg-light);
+    color: var(--white-text-color-light);
+
+    img {
+      color: var(--white-text-color-light);
+    }
+  }
+
+  img {
+    height: 22px;
+    margin-right: 8px;
+    object-fit: cover;
+  }
+}
+
+hr {
+  margin: 14px 0;
+}

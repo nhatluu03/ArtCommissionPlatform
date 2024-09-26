@@ -1,20 +1,35 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-import "./Layout.scss";
+// Components
+import Navbar from "./components/navbar/Navbar";
+import Sidebar from "./components/sidebar/Sidebar";
+import Conversations from "./components/Conversations/Conversations";
+import { Outlet } from "react-router-dom";
+import Talent from "./pages/talent/Talent";
+import { io } from "socket.io-client";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "./contexts/user.context";
 
-const Layout = ({ children, showSidebar }) => {
+
+export default function Layout ({ showSidebar, talent }) {
+  const { user, login, logout } = useContext(UserContext);
+  const [socket, setSocket] = useState(null)
+
+  useEffect(() => {
+    setSocket(io("http://localhost:8900"));
+  }, []);
+
+  useEffect(() => {
+    if(user){
+      socket?.emit("addUser", user._id);
+    }
+  }, [socket, user]);
+
   return (
-    <div className="app-container">
-      <nav className="navbar">
-        <NavLink to="/">Home</NavLink>
-        <NavLink to="/page1">Page 1</NavLink>
-        <NavLink to="/page2">Page 2</NavLink>
-        {/* Add more links as needed */}
-      </nav>
-      {showSidebar && <div className="sidebar">Sidebar Content</div>}
-      <div className="content">{children}</div>
+    <div
+      className={`app ${showSidebar ? "with-sidebar" : "without-sidebar"}`}
+    >
+      <Navbar socketNavbar = {socket} />
+      <Conversations socketConversation = {socket} />
+      {showSidebar ? <Talent/> : <Outlet />}
     </div>
   );
 };
-
-export default Layout;

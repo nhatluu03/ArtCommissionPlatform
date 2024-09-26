@@ -13,9 +13,10 @@
 .artwork-item {
   img {
     width: 100%;
-    height: auto; /* Maintain aspect ratio */
-    // display: block; /* Remove extra space below inline-block elements */
-    border-radius: 8px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 12px;
+    max-height: 350px;
   }
   .artwork-item__details {
     margin-top: 8px;

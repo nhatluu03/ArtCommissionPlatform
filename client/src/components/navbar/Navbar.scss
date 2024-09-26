@@ -3,14 +3,25 @@
   justify-content: space-between;
   align-items: center;
   color: var(--text-color-light);
-  margin-bottom: 20px;
-  // position: fixed;
-  // background-color: white;
-  // box-shadow: 0 4px 2px -2px rgb(223, 223, 223);
+  margin: 0 4%;
+  position: fixed;
+  background-color: white;
   top: 0;
   left: 0;
   right: 0;
   z-index: 10;
+  height: 70px;
+
+  &:after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.6);
+    width: 100%;
+    height: 10px;
+  }
 
   a {
     color: var(--text-color-light);
@@ -25,13 +36,14 @@
       align-items: center;
       margin-right: 40px;
       .brand-logo {
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
+        margin-right: 8px;
         object-fit: cover;
       }
 
       .brand-name {
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 600;
       }
     }
@@ -44,15 +56,23 @@
     }
 
     .search-form {
-      min-width: 300px;
+      min-width: 370px;
       position: relative;
 
       .form-field {
-        border: 1.5px solid var(--field-border-light);
+        border-radius: 12px;
+        padding: 8px 12px;
+        margin-bottom: 0;
+        background-color: var(--form-field-bg-light);
+        border: 1px solid var(--field-border-light);
       }
 
-      .form-field__input {
-        font-size: 1.5rem;
+      input {
+        border-radius: 16px;
+        border: none;
+        outline: none;
+        width: calc(100% - 28px);
+        background: transparent;
       }
 
       .form-field img {
@@ -99,7 +119,7 @@
         h3 {
           margin: 8px 0 4px;
         }
-        
+
         hr {
           margin: 8 0;
         }
@@ -165,11 +185,11 @@
           display: block;
         }
       }
-      
     }
 
     .nav-right-menu {
       position: relative;
+      display: flex;
       .nav-right-menu__avt {
         width: 32px;
         height: 32px;
@@ -180,7 +200,5 @@
         position: relative;
       }
     }
-
-   
   }
 }

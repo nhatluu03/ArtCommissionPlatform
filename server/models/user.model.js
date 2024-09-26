@@ -17,6 +17,9 @@ const UserSchema = new Schema(
       default:
         "https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png",
     },
+    bg: {
+      type: String,
+    },
     street: { type: String },
     number: { type: String },
     city: { type: String },
@@ -51,13 +54,38 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
+// Define a list of predefined background image URLs
+// const predefinedBgImages = [
+//   'url1.jpg',
+//   'url2.jpg',
+//   'url3.jpg',
+//   'url4.jpg',
+//   'url5.jpg'
+// ];
+
+// // Middleware to set a random background image URL before saving the user document
+// UserSchema.pre('save', function (next) {
+//   // Check if the bgImg field is not already set
+//   if (!this.bg) {
+//     // Set a random URL from the predefined list
+//     const randomIndex = Math.floor(Math.random() * predefinedBgImages.length);
+//     this.bg = predefinedBgImages[randomIndex];
+//   }
+
+//   // Continue with the save operation
+//   next();
+// });
+
+
+
 const User = mongoose.model("User", UserSchema);
 // Define a discriminator for the "talent" role
 const TalentUser = User.discriminator(
   "talent",
   new Schema({
     // Add role-specific fields here
-    rating: { type: Number, default: 5, min: [0, "Rating cannot be negative"], max: [5, "Rating cannot exceed 5"] },
+    rating: {type: Number, default: 5, min: [0, "Rating cannot be negative"], max: [5, "Rating cannot exceed 5"] },
+    title: {type: String, default: "Freelance artist"},
   })
 );
 

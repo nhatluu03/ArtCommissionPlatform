@@ -30,6 +30,7 @@
   }
 
   .menu-content {
+    display: none;
     position: absolute;
     overflow: hidden;
     top: 42px;
@@ -48,9 +49,14 @@
     .hor-hr {
       width: 100%;
     }
+    
+    &.active {
+      display: block;
+    }
   }
 
   .sub-menu {
+    display: none;
     position: absolute;
     overflow: hidden;
     top: 42px;
@@ -70,10 +76,10 @@
     // right: calc(-100% - 24px);
 
     &.active {
-      //   display: block;
-      position: 0;
-      transform: translateX(calc(-100% - 24px));
-      transition: 0.5s;
+        display: block;
+      // position: 0;
+      // transform: translateX(calc(-100% - 24px));
+      // transition: 0.5s;
     }
 
     .sub-menu__title {

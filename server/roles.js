@@ -4,7 +4,7 @@ const ac = new AccessControl();
 const roles = () => {
   ac.grant("client").deleteOwn("profile").updateOwn("profile").readOwn("profile").createOwn("profile");
 
-  ac.grant("talent").extend("client");
+  ac.grant("talent").extend("client").readAny("profile");
 
   ac.grant("admin")
     .extend("client")

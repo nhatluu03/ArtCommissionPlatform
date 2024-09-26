@@ -6,9 +6,9 @@ import OrderRouter from './order.route.js'
 import CommissionRouter from './commission.route.js'
 import CouponRouter from './coupon.route.js'
 import ConversationRouter from './conversation.route.js'
-import MessageRouter from './message.route.js'
+// import MessageRouter from './message.route.js'
 
-export default function route(app) {
+export default function route(app) { 
     app.use('/users', UserRouter);
     app.use('/artworks', ArtworkRouter);
     app.use('/categories', CategoryRouter);
@@ -17,7 +17,7 @@ export default function route(app) {
     app.use('/commissions', CommissionRouter);
     app.use('/coupons', CouponRouter);
     app.use('/conversations', ConversationRouter);
-    app.use('/messages', MessageRouter);
+    // app.use('/messages', MessageRouter);
     // app.use('/events', EventRouter);
     // app.use('/reports', ReportRouter);
     // app.use('/', siteRouter);

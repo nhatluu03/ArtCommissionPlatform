@@ -1,0 +1,322 @@
+.order{
+    background-color: #F5F5F5;
+    border: 10px red;
+    .container{
+        display: flex;
+        gap: 55px;
+        .left{
+            display: flex;
+            flex: 2;
+            flex-direction: column;
+            padding: 25px 0 25px 70px;
+            gap: 26px;
+            .deliveryInfo{
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                .header{
+                    margin-bottom: 20px;
+                    font-size: 16px;
+                    font-weight: 500;
+                    color: #2C2C2C;
+                }
+                .deliveryForm{
+                    display: flex;
+                    gap: 60px;
+                    background-color: white;
+                    border-radius: 8px;
+                    padding: 35px;
+                    filter: drop-shadow(0px 2px 4px rgba(194, 194, 194, 0.25));
+                    .deliveryFormLeft,.deliveryFormRight{
+                        display: flex;
+                        flex: 1;
+                        flex-direction: column;
+                    }
+                    .deliveryFormGroup{
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                        margin-bottom: 20px;
+                        span{
+                            font-size: 14px;
+                            color: #2C2C2C;
+                        }
+                        input{
+                            border-radius: 8px;
+                            padding: 12px 14px;
+                            border: 1px solid #D6D6D6;
+                            background: #FFF;
+                            color: #202024;
+                            font-size: 12px;
+                            font-weight: 500;
+                            &:focus{
+                                border: 1px solid #3C3C3C;
+                            }
+                        }
+                        
+                    }
+                }
+            }
+            .packagingInfo{
+                display: flex;
+                flex-direction: column;
+                .header{
+                    font-size: 16px;
+                    margin-bottom: 20px;
+                }
+                .packageContainer{
+                    display: flex;
+                    gap: 55px;
+                    background-color: white;
+                    padding: 25px 35px;
+                    border-radius: 8px;
+                    filter: drop-shadow(0px 2px 4px rgba(194, 194, 194, 0.25));
+                    .packageMethods {
+                        flex: 1;
+                        position: relative;
+                        display: inline-block;
+
+                        span{
+                            font-size: 14px;
+                            font-weight: 500;
+                            color: #202024;
+                        }
+                        .packageHeader {
+                            margin-top: 10px;
+                            padding: 10px 14px;
+                            border-radius: 8px;
+                            border: 1px solid #D6D6D6;
+                            background: #FFF;
+                            color: #4D4D4D;
+                          cursor: pointer;
+                        }
+                      
+                        .packageOptions {
+                          position: absolute;
+                          top: 100%;
+                          left: 0;
+                          width: 100%;
+                          border: 1px solid #ccc;
+                          background-color: #fff;
+                          display: flex;
+                          flex-direction: column;
+                          border-radius: 8px;
+                          overflow: hidden;
+                          z-index: 1;
+
+                          .option {
+                            padding: 10px;
+                            cursor: pointer;
+                            transition: background-color 0.3s;
+                            &:hover {
+                              background-color: #f4f4f4;
+                            }
+                          }
+                        }
+                    }
+                    .packageNotes{
+                        display: flex;
+                        flex: 1;
+                        flex-direction: column;
+                        gap: 10px;
+                        span{
+                            font-size: 14px;
+                            font-weight: 500;
+                            color: #202024;
+                        }
+                        input{
+                            border-radius: 8px;
+                            padding: 11px 14px;
+                            border: 1px solid #D6D6D6;
+                            background: #FFF;
+                            color: #202024;
+                            font-size: 12px;
+                            font-weight: 500;
+                            &:focus{
+                                border: 1px solid #3C3C3C;
+                            }
+                        }
+                    }
+                }
+            }
+            .paymentMethod{
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                filter: drop-shadow(0px 2px 4px rgba(194, 194, 194, 0.25));
+                span{
+                    font-size: 16px;
+                    font-weight: 500;
+                    color: #202024;
+                    user-select: none;
+                }
+                .paymentOption{
+                    background-color: white;
+                    padding: 20px 35px;
+                    border-radius: 8px;
+                    gap: 6px;
+                    .options{
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        margin-bottom: 15px;
+                        .methodForm{
+                            display: flex;
+                            align-items: center;
+                            gap: 6px;
+                        }
+                    }
+                    span{
+                        font-size: 14px;
+                    }
+                    input{
+                        accent-color: #202020;
+                    }
+                    .pay{
+                        #submit{
+                            display: none;;
+                            width: 20%;
+                            text-align: center;
+                            padding: 8px;
+                            border-radius: 8px;
+                            border: 1px solid #1D1D1D;
+                            background: #2C2C2C;
+                            transition: 0.2s;
+                            margin-top: 10px;
+                        }
+                        #button-text{
+                            font-weight: 400;
+                            color: white;
+                        }
+                    }
+                }
+                  
+            }
+        }
+        .right{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 25px 70px 25px 0;
+            span{
+                font-size: 16px;
+                font-weight: 500;
+                color: #202024;
+                user-select: none;
+            }
+            .container{
+                margin-top: 20px;
+                background-color: white;
+                border-radius: 8px;
+                display: flex;
+                flex-direction: column;
+                filter: drop-shadow(0px 2px 4px rgba(194, 194, 194, 0.25));
+                .artworks{
+                    flex: 4;
+                }
+                .coupons{
+                    flex: 2;
+                    padding: 10px 25px;
+                    border-bottom: 1px solid #D6D6D6;
+                    .couponsLabel{
+                        display: flex;
+                        justify-content: space-between;
+                        .mainLabel{
+                            color: #717175;
+                            font-size: 14px;
+                        }
+                        span{
+                            color: #181818;
+                        }
+                    }
+                }
+                .deliver{
+                    flex: 2;
+                    padding: 10px 25px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    border-bottom: 1px solid #D6D6D6;
+                    .deliverTop{
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        span{
+                            color: #717175;
+                            font-size: 14px;
+                        }
+                        .deliverPrice{
+                            color: #181818;
+                            font-size: 14px;
+                        }
+                    }.deliverDetail{
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+                        span{
+                            font-size: 14px;
+                            color: #717175;
+                        }
+                    }
+
+                }
+                .subtotal{
+                    flex: 2;
+                    display: flex;
+                    padding: 10px 25px;
+                    flex-direction: column;
+                    border-bottom: 1px solid #D6D6D6;
+                    .subtotalInfo{
+                        display: flex;
+                        justify-content: space-between;
+                        .subtotalLabel{
+                            color: #717175;
+                            font-size: 14px;
+                        }
+                        .subtotalPrice{
+                            font-size: 14px;
+                            color: #181818;
+                        }
+                    }
+                    .packagingInfo{
+                        display: flex;
+                        justify-content: space-between;
+                        .packagingLabel{
+                            color: #717175;
+                        }
+                        .packagingMethod{
+                            color: #181818;
+                        }
+                    }
+                }
+                .confirm{
+                    flex: 2;
+                    padding: 10px 25px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                    .total{
+                        display: flex;
+                        justify-content: space-between;
+                        .totalLabel{
+                            color: #717175;
+                            font-size: 14px;
+                        }
+                        .totalPrice{
+                            color: #181818;
+                            font-size: 14px;
+                        }
+                    }
+                    .confirmButton{
+                        padding: 10px;
+                        border-radius: 8px;
+                        border: 1px solid #1D1D1D;
+                        background: #2C2C2C;
+                        color: white;
+                        transition: 0.2s;
+                    }
+                }
+            }
+        }
+    }
+}

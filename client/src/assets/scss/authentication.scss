@@ -4,18 +4,18 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 40%;
+  width: 45%;
   border-radius: 8px;
   display: flex;
   justify-content: space-between;
   background-color: white;
+  min-height: 63vh;
 
   .authentication-left {
-    width: 45%;
-    height: 56vh;
+    width: 47%;
     position: relative;
     color: white;
-    padding: 40px 40px;
+    padding: 30px 40px 40px;
     text-align: center;
 
     img {
@@ -46,6 +46,9 @@
     p {
         font-size: 1.4rem;
         line-height: 2.4rem;
+        margin-top: 40px;
+        opacity: 0.95;
+        font-weight: 400;
     }
 
     span {
@@ -57,15 +60,46 @@
   }
 
   .authentication-right {
-    width: 55%;
-    padding: 40px 10%;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 53%;
+    padding: 30px 10%;
+
+    .form {
+      width: 100%;
+    }
 
     .form-extra-text {
+      font-size: 1.3rem;
       text-align: center;
+      width: 100%;
 
       .form-extra-text__link {
         color: var(--green-link-color-light);
+        
+      }
+
+      &:hover {
+        cursor: pointer;
+        opacity: 0.8;
       }
     }
+  }
+}
+
+.authentication-btn {
+  border-radius: 12px;
+  outline: none;
+  border: none;
+  background: var(--black-text-color-light);
+  color: var(--gray-bg-light);
+  padding: 8px 20px;
+  font-weight: 500;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.95;
+    transition: 0.5s;
   }
 }

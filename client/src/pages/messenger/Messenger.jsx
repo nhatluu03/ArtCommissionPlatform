@@ -19,6 +19,7 @@ export default function Messenger() {
     accessToken:
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVjOGFmZTlmNWFlMDVjYjVmYzg5ZmIiLCJpYXQiOjE3MDIwMzc3MzYsImV4cCI6MTcwMjEyNDEzNn0.rrh6yra0PdLi3tY5ZdNQWeVlB8pCs_LEOLqA0gMpXdY",
   };
+  
   //Code
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
@@ -26,10 +27,12 @@ export default function Messenger() {
   const [newMessage, setNewMessage] = useState("");
   let [arrivalMessage, setArrivalMessage] = useState(null);
   const scrollRef = useRef();
+  
   //Socket Initialization
   const socket = useRef(null);
   useEffect(() => {
     socket.current = io("ws://localhost:8900");
+    
     //Get message from server
     socket.current.on("getMessage", (data) => {
       setArrivalMessage = {
@@ -73,21 +76,21 @@ export default function Messenger() {
       text: newMessage,
     };
 
+    socket.current.emit("sendMessage", {
+      senderId: currentUser._id,
+      receiverId,
+      content: newMessage,
+    });
     try {
       const res = await axios.post("http://localhost:3000/messages", message);
       setMessages([...messages, res.data]);
-      setNewMessage("");
     } catch (error) {
       console.log(error);
     }
     const receiverId = currentChat.members.find(
       (member) => member !== currentUser._id
     );
-    socket.current.emit("sendMessage", {
-      senderId: currentUser._id,
-      receiverId,
-      text: newMessage,
-    });
+    setNewMessage("");
     console.log(receiverId);
   };
 

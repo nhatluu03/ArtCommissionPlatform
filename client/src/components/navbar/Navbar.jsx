@@ -1,17 +1,60 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../../assets/img/logo.png";
 import Avt from "../../assets/img/avt.png";
 import Menu from "../menu/Menu.jsx";
 import "./Navbar.scss";
 import Register from "../register/Register.jsx";
+import Login from "../login/Login.jsx";
 import Cookies from "js-cookie";
+import { UserContext } from "../../contexts/user.context.jsx";
+import { io } from "socket.io-client";
 
 const Navbar = () => {
+  const { user, login, logout } = useContext(UserContext);
+  const [arrivalNotification, setArrivalNotification] = useState(null)
+  const [notifications, setNotifications] = useState([]);
+  const [open, setOpen] = useState(false);
+  let socket = useRef(null);
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      login(JSON.parse(localStorage.getItem("user")));
+    }
+  }, []);
+
   const inputRef = useRef();
   const [isFocused, setIsFocused] = useState(false);
   const [searchOptions, setSearchOptions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  //Socket initialization
+  //Socket notification
+  useEffect(() => {
+    socket.current = io("ws://localhost:8900");
+
+    socket.current.on("getNotification", (data) => {
+      setArrivalNotification({
+        senderName: data.senderName,
+        message: data.message,
+        orderId: data.orderId,
+        createdAt: Date.now()
+      })
+      console.log(data)
+    });
+  }, []);
+
+  useEffect(()=>{
+    if(arrivalNotification){
+      notifications.push(arrivalNotification)
+    }
+    console.log(notifications)
+  },[arrivalNotification])
+  useEffect(() => {
+    if(user){
+      socket.current.emit("addUser", user._id);
+      socket.current.on("getUsers", (users) => {});
+      console.log('5')
+    }
+  }, [user]);
 
   // Toggle display menu
   const menuRef = useRef();
@@ -21,6 +64,22 @@ const Navbar = () => {
     let handler = (e) => {
       if (menuRef && !menuRef.current.contains(e.target)) {
         setShowMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    };
+  });
+
+  // Toggle display Login form
+  const openLoginBtnRef = useRef();
+  const [showLoginForm, setShowLoginForm] = useState(false);
+
+  useEffect(() => {
+    let handler = (e) => {
+      if (openLoginBtnRef && !openLoginBtnRef.current.contains(e.target)) {
+        setShowLoginForm(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -47,15 +106,6 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handler);
     };
   });
-
-  // Check is logged in
-  const accessToken = Cookies.get("access-token");
-  let isLogged = false;
-  if (accessToken) {
-    // Request to server 
-    
-    isLogged = true;
-  }
 
   const focusInput = () => {
     setIsFocused(true);
@@ -112,6 +162,14 @@ const Navbar = () => {
     }, 100);
   };
 
+  const displayNotification = ({ message, orderId }) => {
+    return (
+      <Link to={`/order_dashboard/:${orderId}`}>
+        <span className="notification">{message}</span>
+      </Link>
+    );
+  };
+  console.log(arrivalNotification)
   return (
     <nav className="nav">
       <div className="nav-left">
@@ -133,7 +191,7 @@ const Navbar = () => {
             />
             <input
               type="text"
-              className="form-field__input"
+              className=""
               placeholder="Search for artworks, artists, ..."
               ref={inputRef}
               onChange={handleInputChange}
@@ -216,32 +274,78 @@ const Navbar = () => {
         <hr className="hor-hr" />
 
         <div className="nav-right-icon-container">
-          <div className="nav-right-icon-item">
+          <div onClick={() => setOpen(!open)} className="nav-right-icon-item">
             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAWVJREFUSEvN1TFIlVEYxvGfuBkOitBQWgYKQkN7DYKKQ4uiiM6ubSm1qYMICo7i3BIi4ioqCgnuDgoOhkKgBIJB0BBUfPF9d/juPfc7V7noOz/n+T/nPe85p0Gdq6HO/moBjOFTGmgCmzHhYgBNmMQ8mlPTH5jDKn5VAxUB+vEZbQGT7xjFQQhSDTCMdTRiAyvYS4368A5D+I232KkECQEe4wyP8B7LgYQzmMUVuvAzrwsBljCFNYwXHOYWBkNBQoALdOAVjgoAA9jGIV7H7uBvKkz6/6cA0Ipr3KClVkDRlGV+WaAyfcgguCCwm4cFeIbzNGmtLXqOZEBKlTd4ii/oxDFexrw3OEEPvuINLrN1ecApuisJC0BP0mAv8sHygOyw2vEtMn0mq9jaEKBG7zJ5yTcP2EfvHd13kdzu/xU7JbdmxgI+YiFH+YDFInIsINElL+xIapj8D9PIhiLIiQUUBb0/wD/3oz4ZE6fqJQAAAABJRU5ErkJggg==" />
           </div>
+          <div>
+            {open && (
+              <div className="notifications">
+                {notifications.map((n) => displayNotification(n))}
+                <button className="nButton">
+                  Mark as read
+                </button>
+              </div>
+            )}
+          </div>
           <div className="nav-right-icon-item">
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAO5JREFUSEvd1TFuwkAQheGPMlcIEhKKlOQaOQEtV0hNGhpqaKKUHCEn4AAcgYJ0EUhRrpAmCLQSlmzL9hqMpRA3W8zO+3fe7I47Wv46LetLAwaY4rEh9AMvWASdNOAL3YbiSfon7vKA/THa1LaMTlrsfwKSqmKtKXUiZlHrgNjJi+J/q8lVFpVd55MqaB1w/T24aAVb9EoUk4Y+YY77CHmDfn7YhXE9w0NB8i1eMaxR0grjonFd9Wh+cIOwTvCG3xqwzP+gChBi7xjhu45wsic2+8M7WOMZy1OE6wLCiYMdu3PE800+V6MyL2ZRY+gBDRc1GbMbgpYAAAAASUVORK5CYII=" />
+            Cart
+            {/* <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAO5JREFUSEvd1TFuwkAQheGPMlcIEhKKlOQaOQEtV0hNGhpqaKKUHCEn4AAcgYJ0EUhRrpAmCLQSlmzL9hqMpRA3W8zO+3fe7I47Wv46LetLAwaY4rEh9AMvWASdNOAL3YbiSfon7vKA/THa1LaMTlrsfwKSqmKtKXUiZlHrgNjJi+J/q8lVFpVd55MqaB1w/T24aAVb9EoUk4Y+YY77CHmDfn7YhXE9w0NB8i1eMaxR0grjonFd9Wh+cIOwTvCG3xqwzP+gChBi7xjhu45wsic2+8M7WOMZy1OE6wLCiYMdu3PE800+V6MyL2ZRY+gBDRc1GbMbgpYAAAAASUVORK5CYII=" /> */}
           </div>
         </div>
 
-        {<div className={`nav-right-menu ${!showMenu ? "hide" : ""}`} ref={menuRef}>
-            <img
-              src={Avt}
-              className="nav-right-menu__avt"
-              onClick={() => {
-                setShowMenu(!showMenu);
-              }}
-              alt="Avatar"
-            />
-            {showMenu && <Menu />}
+        {
+          <div
+            className={`nav-right-menu ${!user ? "hide" : ""}`}
+            ref={menuRef}
+          >
+            {user && (
+              <img
+                src={user.avatar}
+                className="nav-right-menu__avt"
+                onClick={() => {
+                  setShowMenu(!showMenu);
+                }}
+                alt="Avatar"
+              />
+            )}
+            {user && showMenu && <Menu />}
           </div>
         }
-        <div ref={openRegisterBtnRef} className={`open-register-form-btn ${isLogged ? "hide" : ""}` } >
-          <button onClick={() => setShowRegisterForm(!showRegisterForm)}>
-            Sign up
+
+        {/* Login form */}
+        <div
+          ref={openLoginBtnRef}
+          className={`open-login-form-btn ${user ? "hide" : ""}`}
+        >
+          <button
+            className="authentication-btn login-btn"
+            onClick={() => {
+              setShowLoginForm(!showLoginForm);
+            }}
+          >
+            Sign in
           </button>
+          {showLoginForm && (
+            <Login
+              setShowLoginForm={setShowLoginForm}
+              setShowRegisterForm={setShowRegisterForm}
+            />
+          )}
+        </div>
+
+        {/* Register form */}
+        <div
+          ref={openRegisterBtnRef}
+          className={`open-register-form-btn ${user ? "hide" : ""}`}
+        >
+          {/* <button onClick={() => setShowRegisterForm(!showRegisterForm)}>
+            Sign up
+          </button> */}
           {showRegisterForm && (
-            <Register setShowRegisterForm={setShowRegisterForm} />
+            <Register
+              setShowLoginForm={setShowLoginForm}
+              setShowRegisterForm={setShowRegisterForm}
+            />
           )}
         </div>
       </div>

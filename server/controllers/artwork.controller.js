@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import Artwork from "../models/artwork.model.js";
-import { TalentUser } from "../models/user.model.js";
 import createError from "../utils/createError.js";
 import Category from "../models/category.model.js";
 
@@ -9,37 +8,17 @@ class ArtworkController {
     return artwork.talent.toString() === userId.toString();
   };
 
-  index = async (req, res, next) => {
+  index = async (req, res) => {
     try {
-      const artworks = Artwork.aggregate([
-        {
-          $lookup: {
-            from: "users",
-            localField: "artist",
-            foreignField: "_id",
-            pipeline: [{ $match: { _id: "$artist" } }],
-            as: "artist"
-          }
-        },
-        { $unwind: "$artist" },
-        {
-          $project: {
-            _id: 1,
-            images: 1,
-            likes: 1,
-            saves: 1,
-            description: 1,
-            price: 1,
-            forSelling: 1,
-            artistName: "$artist.name",
-            artistAvatar: "$artist.avatar",
-          },
-        },
-      ]).exec();
-
+      // Use populate to get artworks along with the corresponding talent
+      const artworks = await Artwork.find().populate({
+        path: "talent",
+        select: "avatar username", // get the fields avatar and username only
+      });
       res.status(200).json(artworks);
     } catch (error) {
-      next(error);
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
   };
 
@@ -125,6 +104,19 @@ class ArtworkController {
       await Artwork.findByIdAndDelete(req.params.id);
 
       res.status(200).json("Artwork deleted successfully");
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  // Additional custom methods
+  getArtpieces = async (req, res, next) => {
+    const { talentId } = req.params;
+    try {
+      // Fetch artworks associated with the specified talentId
+      const artworks = await Artwork.find({ talent:talentId });
+
+      res.status(200).json(artworks);
     } catch (error) {
       next(error);
     }
